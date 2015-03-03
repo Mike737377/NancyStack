@@ -1,5 +1,7 @@
 ﻿using Nancy;
 using Nancy.ModelBinding;
+using Nancy.Security;
+using NancyStack.Configuration;
 using NancyStack.Modules;
 using System;
 using System.Collections.Generic;
@@ -27,7 +29,7 @@ namespace NancyStack.Routing
         private readonly NancyModule.RouteBuilder actionBuilder;
         private readonly NancyStackModule module;
         private readonly string route;
-        private List<Permission> claims;
+        private List<IRoutingPermission> claims;
         private List<OnHandler<TReturnModel>> onHandlers = new List<OnHandler<TReturnModel>>();
         private Func<NancyContext, TReturnModel, dynamic> onSuccess;
         private IValidationErrorHandler onValidationError;
@@ -71,7 +73,7 @@ namespace NancyStack.Routing
                 fileProperties.Each(x => x.SetValue(model, module.Request.Files.FirstOrDefault(v => v.Key == x.Name), null));
             }
 
-            var result = module.Bus.Send<TModel, TReturnModel>(model);
+            var result = NancyStackWiring.HandlerRegister.ExecuteHandlerFor<TModel, TReturnModel>(model);
 
             foreach (var on in onHandlers)
             {
@@ -96,18 +98,18 @@ namespace NancyStack.Routing
         {
             onSuccess = result;
 
-            module.RouteRegister.Register(typeof(TModel), route);
+            UrlRoute.Instance.Register(typeof(TModel), route);
             actionBuilder[route] = this.Handle;
 
             //make sure instance exists
-            try
-            {
-                ServiceFactory.Container.GetInstance<IHandler<TModel, TReturnModel>>();
-            }
-            catch (Exception ex)
-            {
-                throw new HandlerMissingException(route, typeof(TModel), typeof(TReturnModel), ex);
-            }
+            //try
+            //{
+            //    NancyStackWiring.HandlerRegister.GetHandlerFor<TModel, TReturnModel>();
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new HandlerMissingException(route, typeof(TModel), typeof(TReturnModel), ex);
+            //}
         }
 
         public IReturningRouteHandlerBuilder<TModel, TReturnModel> OnValidationError<TValidationModel>(Func<TValidationModel, dynamic> validationError)
@@ -122,14 +124,14 @@ namespace NancyStack.Routing
             return this;
         }
 
-        public IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(params Permission[] roles)
+        public IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(params IRoutingPermission[] roles)
         {
-            claims = new List<Permission>();
+            claims = new List<IRoutingPermission>();
             claims.AddRange(roles);
             return this;
         }
 
-        public IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(List<Permission> roles)
+        public IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(List<IRoutingPermission> roles)
         {
             claims = roles;
             return this;

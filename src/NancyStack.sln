@@ -9,6 +9,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NancyStack.Tests", "NancySt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NancyStack.Razor", "NancyStack.Razor\NancyStack.Razor.csproj", "{63BAD283-8402-4363-85E4-67EE0A1BD00D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2DECA1C4-B03F-4989-8CFB-B62B9605E761}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NancyStack.Sample", "NancyStack.Sample\NancyStack.Sample.csproj", "{B4F9C525-5C56-440E-B4C2-972A33D7C8CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +34,10 @@ Global
 		{63BAD283-8402-4363-85E4-67EE0A1BD00D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63BAD283-8402-4363-85E4-67EE0A1BD00D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63BAD283-8402-4363-85E4-67EE0A1BD00D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4F9C525-5C56-440E-B4C2-972A33D7C8CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4F9C525-5C56-440E-B4C2-972A33D7C8CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4F9C525-5C56-440E-B4C2-972A33D7C8CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4F9C525-5C56-440E-B4C2-972A33D7C8CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

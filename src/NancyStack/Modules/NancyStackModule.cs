@@ -1,4 +1,5 @@
 ﻿using Nancy;
+using NancyStack.Configuration;
 using NancyStack.Routing;
 using System;
 using System.Collections.Generic;
@@ -15,14 +16,6 @@ namespace NancyStack.Modules
         public NancyStackModule()
         {
             routeRegister = UrlRoute.Instance;
-        }
-
-        public virtual IApplicationBus Bus
-        {
-            get
-            {
-                return ServiceFactory.Container.GetInstance<IApplicationBus>();
-            }
         }
 
         protected IRouteHandlerBuilder<TModel> GetRoute<TModel>(string route)

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Xunit;
 
 namespace NancyStack.Tests.Modules
 {
@@ -44,8 +45,9 @@ namespace NancyStack.Tests.Modules
             module = new TestModule();
         }
 
-        public class WhenRegisteringGetRoute
+        public class WhenRegisteringGetRoute : NancyStackModuleTest
         {
+            [Fact]
             public void ShouldRegisterCorrectUrl()
             {
                 UrlRoute.Instance.For(new GetQuery()).ShouldBe("/get");
