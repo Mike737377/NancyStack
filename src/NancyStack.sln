@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NancyStack", "NancyStack\Na
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NancyStack.Tests", "NancyStack.Tests\NancyStack.Tests.csproj", "{907E9E93-91A6-4D3E-A06E-315266A36349}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NancyStack.Razor", "NancyStack.Razor\NancyStack.Razor.csproj", "{63BAD283-8402-4363-85E4-67EE0A1BD00D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{907E9E93-91A6-4D3E-A06E-315266A36349}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{907E9E93-91A6-4D3E-A06E-315266A36349}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{907E9E93-91A6-4D3E-A06E-315266A36349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63BAD283-8402-4363-85E4-67EE0A1BD00D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63BAD283-8402-4363-85E4-67EE0A1BD00D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63BAD283-8402-4363-85E4-67EE0A1BD00D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63BAD283-8402-4363-85E4-67EE0A1BD00D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
