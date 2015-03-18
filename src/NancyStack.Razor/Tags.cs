@@ -1,16 +1,18 @@
 ﻿using HtmlTags;
+using NancyTags = Nancy.ViewEngines.Razor;
+using NancyStack.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NancyStack.Tags
+namespace NancyStack.Razor
 {
     public interface IDisposableHtmlString : IDisposable
     {
     }
 
-    public class AntiForgeryTokenTag : HtmlTag
+    public class AntiForgeryTokenTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public AntiForgeryTokenTag(string tokenKey, string tokenValue)
             : base("input")
@@ -21,7 +23,7 @@ namespace NancyStack.Tags
         }
     }
 
-    public class CheckboxTag : HtmlTags.CheckboxTag
+    public class CheckboxTag : HtmlTags.CheckboxTag, NancyTags.IHtmlString
     {
         public CheckboxTag(string name, bool value)
             : base(value)
@@ -31,21 +33,21 @@ namespace NancyStack.Tags
         }
     }
 
-    public class DivTag : HtmlTags.HtmlTag
+    public class DivTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public DivTag()
             : base("div")
         { }
     }
 
-    public class NavTag : HtmlTags.HtmlTag
+    public class NavTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public NavTag()
             : base("nav")
         { }
     }
 
-    public class FileUploadTag : HtmlTags.HtmlTag
+    public class FileUploadTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public FileUploadTag(string name)
             : base("input")
@@ -56,28 +58,40 @@ namespace NancyStack.Tags
         }
     }
 
-    public class FormTag<TModel> : HtmlTags.FormTag, IDisposableHtmlString
+    public class FormTag<TModel> : HtmlTags.FormTag, NancyTags.IHtmlString, IDisposableHtmlString
     {
-        private readonly HtmlHelpers<TModel> _helper;
+        public FormTag()
+            : base(UrlRoute.For<TModel>())
+        { }
 
-        public FormTag(HtmlHelpers<TModel> helper, string url)
-            : base(url)
-        {
-            _helper = helper;
-        }
+        public FormTag(TModel model)
+            : base(UrlRoute.For(model))
+        { }
 
         public void Dispose()
         {
-            //_helper.RenderContext.Context.
-
-            //using (var writer = new StreamWriter(_helper.RenderContext.Context.Response))
-            //{
-            //    writer.Write(_helper.Raw("</form>"));
-            //}
         }
+
+        //private readonly HtmlHelpers<TModel> _helper;
+
+        //public FormTag(HtmlHelpers<TModel> helper, string url)
+        //    : base(url)
+        //{
+        //    _helper = helper;
+        //}
+
+        //public void Dispose()
+        //{
+        //    //_helper.RenderContext.Context.
+
+        //    //using (var writer = new StreamWriter(_helper.RenderContext.Context.Response))
+        //    //{
+        //    //    writer.Write(_helper.Raw("</form>"));
+        //    //}
+        //}
     }
 
-    public class LabelTag : HtmlTags.HtmlTag
+    public class LabelTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public LabelTag(string text, string forId)
             : base("label")
@@ -93,7 +107,7 @@ namespace NancyStack.Tags
         }
     }
 
-    public class LinkTag : HtmlTags.HtmlTag
+    public class LinkTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public LinkTag(string href)
             : base("a")
@@ -102,14 +116,14 @@ namespace NancyStack.Tags
         }
     }
 
-    public class ListItemTag : HtmlTags.HtmlTag
+    public class ListItemTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public ListItemTag()
             : base("li")
         { }
     }
 
-    public class PasswordTag : HtmlTags.HtmlTag
+    public class PasswordTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public PasswordTag(string name)
             : base("input")
@@ -120,7 +134,7 @@ namespace NancyStack.Tags
         }
     }
 
-    public class SpanTag : HtmlTags.HtmlTag
+    public class SpanTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public SpanTag(string text)
             : base("span")
@@ -129,7 +143,7 @@ namespace NancyStack.Tags
         }
     }
 
-    public class SubmitTag : HtmlTags.HtmlTag
+    public class SubmitTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public SubmitTag(string text)
             : base("input")
@@ -139,7 +153,7 @@ namespace NancyStack.Tags
         }
     }
 
-    public class TextAreaTag : HtmlTags.HtmlTag
+    public class TextAreaTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public TextAreaTag(string name, string value)
             : base("textarea")
@@ -150,7 +164,7 @@ namespace NancyStack.Tags
         }
     }
 
-    public class TextboxTag : HtmlTags.TextboxTag
+    public class TextboxTag : HtmlTags.TextboxTag, NancyTags.IHtmlString
     {
         public TextboxTag(string name, string value)
             : base(name, value)
@@ -159,14 +173,14 @@ namespace NancyStack.Tags
         }
     }
 
-    public class UnorderedListTag : HtmlTags.HtmlTag
+    public class UnorderedListTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public UnorderedListTag()
             : base("ul")
         { }
     }
 
-    public class ValidationMessageTag : HtmlTags.HtmlTag
+    public class ValidationMessageTag : HtmlTags.HtmlTag, NancyTags.IHtmlString
     {
         public ValidationMessageTag(string text)
             : base("span")

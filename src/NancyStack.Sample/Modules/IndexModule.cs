@@ -11,6 +11,14 @@ namespace NancyStack.Sample.Modules
             GetRoute<IndexQueryModel>("/")
                 .Returning<IndexViewModel>()
                 .OnSuccess(x => View["Index", x]);
+
+            GetRoute<FormQueryModel>("/form")
+                .Returning<FormViewModel>()
+                .OnSuccess(x => View["Form", x]);
+
+            PostRoute<FormInputModel>("/form")
+                .Returning<FormResponseModel>()
+                .OnSuccess(x => View["FormResult", x]);
         }
     }
 }

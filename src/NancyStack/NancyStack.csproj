@@ -63,7 +63,6 @@
     <Compile Include="Routing\UrlRoute.cs" />
     <Compile Include="Routing\UrlRouteRegister.cs" />
     <Compile Include="Routing\IRoutingPermission.cs" />
-    <Compile Include="Tags\Tags.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,4 +1,5 @@
 ﻿using Nancy;
+using Nancy.Security;
 using NancyStack.Configuration;
 using NancyStack.Routing;
 using System;
@@ -16,6 +17,23 @@ namespace NancyStack.Modules
         public NancyStackModule()
         {
             routeRegister = UrlRoute.Instance;
+
+            this.Before += ctx =>
+            {
+                try
+                {
+                    if (ctx.Request.Method.Equals("post", StringComparison.OrdinalIgnoreCase))
+                    {
+                        this.ValidateCsrfToken(TimeSpan.FromDays(7));
+                    }
+                }
+                catch (CsrfValidationException)
+                {
+                    return Response.AsText("Invalid CSRF token").WithStatusCode(403);
+                }
+
+                return null;
+            };
         }
 
         protected IRouteHandlerBuilder<TModel> GetRoute<TModel>(string route)

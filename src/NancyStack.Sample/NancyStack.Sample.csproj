@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Handlers\FormHandler.cs" />
     <Compile Include="Handlers\HandlerContext.cs" />
     <Compile Include="Handlers\IHandler.cs" />
     <Compile Include="Handlers\IndexHandler.cs" />
@@ -87,6 +88,9 @@
   <ItemGroup>
     <Content Include="packages.config" />
     <Content Include="Views\index.cshtml" />
+    <Content Include="Views\form.cshtml" />
+    <Content Include="Views\Shared\_layout.cshtml" />
+    <Content Include="Views\_viewstart.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
