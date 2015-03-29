@@ -40,6 +40,7 @@
       <HintPath>..\packages\Nancy.Authentication.Forms.1.1\lib\net40\Nancy.Authentication.Forms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
@@ -63,6 +64,7 @@
     <Compile Include="Routing\UrlRoute.cs" />
     <Compile Include="Routing\UrlRouteRegister.cs" />
     <Compile Include="Routing\IRoutingPermission.cs" />
+    <Compile Include="Security\HmacProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
