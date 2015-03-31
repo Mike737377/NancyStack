@@ -10,7 +10,6 @@ namespace NancyStack.Razor
 {
     public static class HtmlHelperTags
     {
-
         public static IDisposableHtmlString BeginForm<TModel, TInputModel>(this HtmlHelpers<TModel> helper, TInputModel inputModel)
         {
             return BeginForm(helper, inputModel, false);
@@ -20,7 +19,10 @@ namespace NancyStack.Razor
         {
             var token = helper.RenderContext.GetCsrfToken();
             var form = new FormTag<TInputModel>(inputModel);
-            form.Children.Add(new AntiForgeryTokenTag(token.Key, token.Value));
+            if (NancyStack.Configuration.NancyStackWiring.ConfigurationOptions.CsrfEnabled)
+            {
+                form.Children.Add(new AntiForgeryTokenTag(token.Key, token.Value));
+            }
             form.NoClosingTag();
 
             if (multipartFormData)
@@ -55,6 +57,26 @@ namespace NancyStack.Razor
         {
             return new LabelTag(ReflectionHelper.GetAccessor(expression).FieldName, ReflectionHelper.GetAccessor(expression).FieldName);
         }
-    }
 
+        public static IHtmlString Submit<TModel>(this HtmlHelpers<TModel> helper, string text)
+        {
+            return new SubmitTag(text);
+        }
+
+        public static IHtmlString ValidationMessage<TModel, TProperty>(this HtmlHelpers<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression)
+        {
+            return ValidationMessage(htmlHelper, expression, null);
+        }
+
+        public static IHtmlString ValidationMessage<TModel, TProperty>(this HtmlHelpers<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, string message)
+        {
+            var fieldName = ReflectionHelper.GetAccessor(expression).FieldName;
+            var errors = htmlHelper.RenderContext.Context.ModelValidationResult.Errors.Where(x => x.Key == fieldName).SelectMany(x => x.Value.Select(y => y.ErrorMessage));
+
+            var container = new DivTag();
+            errors.Each(x => container.Children.Add(new ValidationMessageTag(x)));
+
+            return container;
+        }
+    }
 }

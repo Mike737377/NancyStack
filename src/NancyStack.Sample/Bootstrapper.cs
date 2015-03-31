@@ -16,7 +16,8 @@ namespace NancyStack.Sample
             {
                 config.RegisterHandlers(r => r
                     .ScanAssemblyContainingType<Bootstrapper>()
-                    .RegisterHandlerContextFactory(() => new HandlerContext()));
+                    .RegisterHandlerContextFactory(() => new HandlerContext()))
+                    .EnableCsrf(pipelines);
             });
 
             base.ApplicationStartup(container, pipelines);

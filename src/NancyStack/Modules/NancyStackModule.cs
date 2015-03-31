@@ -11,14 +11,17 @@ namespace NancyStack.Modules
 {
     public class NancyStackModule : NancyModule
     {
-
         private readonly IUrlRouteRegister routeRegister;
 
         public NancyStackModule()
         {
             routeRegister = UrlRoute.Instance;
+            this.Before += CheckCsrfToken;
+        }
 
-            this.Before += ctx =>
+        private Response CheckCsrfToken(NancyContext ctx)
+        {
+            if (NancyStackWiring.ConfigurationOptions.CsrfEnabled)
             {
                 try
                 {
@@ -31,9 +34,8 @@ namespace NancyStack.Modules
                 {
                     return Response.AsText("Invalid CSRF token").WithStatusCode(403);
                 }
-
-                return null;
-            };
+            }
+            return null;
         }
 
         protected IRouteHandlerBuilder<TModel> GetRoute<TModel>(string route)
@@ -60,7 +62,7 @@ namespace NancyStack.Modules
         {
             return new RouteHandlerBuilder<TModel>(this, route, Patch);
         }
-        
+
         protected IRouteHandlerBuilder<TModel> OptionsRoute<TModel>(string route)
         {
             return new RouteHandlerBuilder<TModel>(this, route, Options);

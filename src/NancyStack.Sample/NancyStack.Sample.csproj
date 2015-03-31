@@ -91,6 +91,7 @@
     <Content Include="Views\form.cshtml" />
     <Content Include="Views\Shared\_layout.cshtml" />
     <Content Include="Views\_viewstart.cshtml" />
+    <Content Include="Views\formresult.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

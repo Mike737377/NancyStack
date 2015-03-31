@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -39,5 +40,13 @@ namespace NancyStack.Sample.Handlers
     public class FormResponseModel
     {
         public string Name { get; set; }
+    }
+
+    public class FormInputModelValidator : AbstractValidator<FormInputModel>
+    {
+        public FormInputModelValidator()
+        {
+            RuleFor(x => x.Name).NotEmpty();
+        }
     }
 }
