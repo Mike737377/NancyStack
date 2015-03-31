@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Configuration\NancyStackWiring.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Handlers\HandlerRegister.cs" />
     <Compile Include="Handlers\IHandler.cs" />
     <Compile Include="Modules\NancyStackModule.cs" />
     <Compile Include="NancyStackException.cs" />

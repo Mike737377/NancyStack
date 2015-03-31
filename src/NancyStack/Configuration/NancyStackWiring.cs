@@ -1,5 +1,4 @@
 ﻿using Nancy.Bootstrapper;
-using Nancy.Encryption.MachineKey;
 using Nancy.Security;
 using NancyStack.Handlers;
 using NancyStack.Security;
@@ -33,11 +32,6 @@ namespace NancyStack.Configuration
         void RegisterHandlerContextFactory(Func<object> factory);
     }
 
-    public interface IHandlerRegister
-    {
-        TReply ExecuteHandlerFor<TMessage, TReply>(TMessage message);
-    }
-
     public class HandlerRegistration
     {
         private static readonly Type baseHandlerType = typeof(IHandler<,,>);
@@ -64,7 +58,7 @@ namespace NancyStack.Configuration
         }
     }
 
-    public class HandlerRegister : IHandlerRegistration, IHandlerRegister
+    public class HandlerRegister : IHandlerRegistration, IHandlerRegistry
     {
         private static readonly Type baseHandlerType = typeof(IHandler<,,>);
         private static readonly Dictionary<Type, HandlerRegistration> registeredHandlerTypes = new Dictionary<Type, HandlerRegistration>();
@@ -121,7 +115,7 @@ namespace NancyStack.Configuration
             return registeredHandlerTypes[messageType];
         }
 
-        public TReply ExecuteHandlerFor<TMessage, TReply>(TMessage message)
+        public TReply Execute<TMessage, TReply>(TMessage message)
         {
             var messageType = typeof(TMessage);
 
@@ -179,16 +173,16 @@ namespace NancyStack.Configuration
     {
         static NancyStackWiring()
         {
-            HandlerRegister = new HandlerRegister();
+            HandlerRegistry = new HandlerRegister();
             ConfigurationOptions = new ConfigurationOptions();
         }
 
-        public static IHandlerRegister HandlerRegister { get; private set; }
+        public static IHandlerRegistry HandlerRegistry { get; private set; }
         public static ConfigurationOptions ConfigurationOptions { get; private set; }
 
         public static void ConfigureNancyStack(this INancyBootstrapper bootstrapper, Action<IWire> config)
         {
-            config(new Wiring(HandlerRegister as IHandlerRegistration));
+            config(new Wiring(HandlerRegistry as IHandlerRegistration));
         }
     }
 
