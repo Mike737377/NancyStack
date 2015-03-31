@@ -10,8 +10,9 @@ namespace NancyStack.Routing
     {
         IReturningRouteHandlerBuilder<TModel, TReturnModel> WithAuthentication();
 
-        //IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(params Permission[] roles);
-        //IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(List<Permission> roles);
+        IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(params string[] roles);
+
+        IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(IEnumerable<string> roles);
     }
 
     public interface IReturningRouteHandlerBuilder<TModel, TReturnModel>

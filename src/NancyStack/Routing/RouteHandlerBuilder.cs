@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 
 namespace NancyStack.Routing
-{ 
+{
     public class OnHandler<TModel>
     {
         public OnHandler(Func<TModel, bool> on, Func<TModel, dynamic> result)
@@ -29,7 +29,7 @@ namespace NancyStack.Routing
         private readonly NancyModule.RouteBuilder actionBuilder;
         private readonly NancyStackModule module;
         private readonly string route;
-        private List<IRoutingPermission> claims;
+        private List<string> claims;
         private List<OnHandler<TReturnModel>> onHandlers = new List<OnHandler<TReturnModel>>();
         private Func<NancyContext, TReturnModel, dynamic> onSuccess;
         private IValidationErrorHandler onValidationError;
@@ -73,7 +73,7 @@ namespace NancyStack.Routing
                 fileProperties.Each(x => x.SetValue(model, module.Request.Files.FirstOrDefault(v => v.Key == x.Name), null));
             }
 
-            var result = NancyStackWiring.HandlerRegister.ExecuteHandlerFor<TModel, TReturnModel>(model);
+            var result = NancyStackWiring.HandlerRegistry.Execute<TModel, TReturnModel>(model);
 
             foreach (var on in onHandlers)
             {
@@ -124,16 +124,16 @@ namespace NancyStack.Routing
             return this;
         }
 
-        public IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(params IRoutingPermission[] roles)
+        public IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(params string[] roles)
         {
-            claims = new List<IRoutingPermission>();
+            claims = new List<string>();
             claims.AddRange(roles);
             return this;
         }
 
-        public IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(List<IRoutingPermission> roles)
+        public IReturningRouteHandlerBuilder<TModel, TReturnModel> WithRoles(IEnumerable<string> roles)
         {
-            claims = roles;
+            claims = roles.ToList();
             return this;
         }
     }
