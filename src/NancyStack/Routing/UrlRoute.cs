@@ -9,6 +9,11 @@ namespace NancyStack.Routing
     {
         public static IUrlRouteRegister Instance = new UrlRouteRegister();
 
+        public static void Register<TModel>(string route)
+        {
+            Instance.Register(typeof(TModel), route);
+        }
+
         public static void Register(Type type, string route)
         {
             Instance.Register(type, route);
