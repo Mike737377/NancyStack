@@ -7,8 +7,8 @@ using System.Text;
 
 namespace NancyStack.Razor
 {
-    public abstract class View<TViewModel> : NancyRazorViewBase<TViewModel>
-    {       
+    public abstract class NancyStackView<TViewModel> : NancyRazorViewBase<TViewModel>
+    {
         public string UrlFor<TModel>()
         {
             return UrlRoute.For<TModel>();
@@ -18,6 +18,5 @@ namespace NancyStack.Razor
         {
             return UrlRoute.For(model);
         }
-
     }
 }
