@@ -1,6 +1,6 @@
 ﻿@using NancyStack.Razor
 @using NancyStack.Sample.Handlers
-@inherits View<FormViewModel>
+@inherits NancyStackView<FormViewModel>
 @Html.BeginForm(new FormInputModel())
 <div>
     @Html.Label(x => x.Name)

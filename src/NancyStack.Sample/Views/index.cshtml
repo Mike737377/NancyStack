@@ -1,7 +1,6 @@
 ﻿@using NancyStack.Razor
 @using NancyStack.Sample.Handlers
-@inherits View<IndexViewModel>
-
+@inherits NancyStackView<IndexViewModel>
 <img src="~/Content/nancy-logo.png" alt="Nancy logo" /><br />
 This view was rendered using the Nancy Razor view engine<br />
 Current Time: @Model.CurrentTime
