@@ -1,8 +1,9 @@
 ﻿using Nancy;
-using Nancy.ModelBinding;
 using Nancy.Security;
 using NancyStack.Configuration;
+using NancyStack.ModelBinding;
 using NancyStack.Modules;
+using NancyStack.Routing.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,16 +11,9 @@ using System.Text;
 
 namespace NancyStack.Routing
 {
-    public class OnHandler<TModel>
+    internal static class ValidationRouteHandlers
     {
-        public OnHandler(Func<TModel, bool> on, Func<TModel, dynamic> result)
-        {
-            this.Condition = on;
-            this.HandleResult = result;
-        }
-
-        public Func<TModel, bool> Condition { get; private set; }
-        public Func<TModel, dynamic> HandleResult { get; private set; }
+        internal static readonly Dictionary<Type, Func<NancyStackModule, dynamic>> Default = new Dictionary<Type, Func<NancyStackModule, dynamic>>();
     }
 
     public class ReturningRouteHandlerBuilder<TModel, TReturnModel> :
@@ -31,7 +25,7 @@ namespace NancyStack.Routing
         private readonly string route;
         private List<string> claims;
         private List<OnHandler<TReturnModel>> onHandlers = new List<OnHandler<TReturnModel>>();
-        private Func<NancyContext, TReturnModel, dynamic> onSuccess;
+        private Func<OnScenarioContext<TReturnModel>, dynamic> onSuccess;
         private IValidationErrorHandler onValidationError;
         private bool withAuthentication;
 
@@ -50,12 +44,17 @@ namespace NancyStack.Routing
             {
                 if (onValidationError == null)
                 {
-                    throw new NotImplementedException("Validation not implemented");
+                    throw new NotImplementedException("Module routing definition is missing validation error handling");
                 }
 
-                return onValidationError.Handle(parameters);
+                return onValidationError.Handle(module);
             }
 
+            return Handle(module, model);
+        }
+
+        public dynamic Handle(NancyStackModule module, dynamic model)
+        {
             if (withAuthentication)
             {
                 module.RequiresAuthentication();
@@ -66,13 +65,6 @@ namespace NancyStack.Routing
                 module.RequiresClaims(claims.Select(x => x.ToString()));
             }
 
-            //files do not get bound automatically in nancy - do this here manually
-            if (module.Request.Files.Count() > 0)
-            {
-                var fileProperties = model.GetType().GetProperties().Where(x => x.PropertyType == typeof(HttpFile));
-                fileProperties.Each(x => x.SetValue(model, module.Request.Files.FirstOrDefault(v => v.Key == x.Name), null));
-            }
-
             var result = NancyStackWiring.HandlerRegistry.Execute<TModel, TReturnModel>(model);
 
             foreach (var on in onHandlers)
@@ -80,26 +72,33 @@ namespace NancyStack.Routing
                 if (on.Condition(result)) return on.HandleResult(result);
             }
 
-            return onSuccess(this.module.Context, result);
+            return onSuccess(result);
         }
 
-        public IReturningRouteHandlerBuilder<TModel, TReturnModel> On(Func<TReturnModel, bool> on, Func<TReturnModel, dynamic> result)
+        public IReturningRouteHandlerBuilder<TModel, TReturnModel> On(Func<TReturnModel, bool> on, Func<OnScenarioContext<TReturnModel>, dynamic> result)
         {
             onHandlers.Add(new OnHandler<TReturnModel>(on, result));
             return this;
         }
 
-        public void OnSuccess(Func<TReturnModel, dynamic> result)
+        public void OnSuccess(Func<OnScenarioContext<TReturnModel>, dynamic> result)
         {
-            OnSuccess((ctx, model) => result(model));
-        }
+            //    OnSuccess((ctx, model) => result(model));
+            //}
 
-        public void OnSuccess(Func<NancyContext, TReturnModel, dynamic> result)
-        {
+            //public void OnSuccess(Func< OnScenarioContext< NancyContext TReturnModel, dynamic> result)
+            //{
+            var modelType = typeof(TModel);
+
             onSuccess = result;
 
-            UrlRoute.Instance.Register(typeof(TModel), route);
+            UrlRoute.Instance.Register(modelType, route);
             actionBuilder[route] = this.Handle;
+
+            if (!ValidationRouteHandlers.Default.ContainsKey(modelType))
+            {
+                ValidationRouteHandlers.Default.Add(modelType, this.Handle);
+            }
 
             //make sure instance exists
             //try
@@ -112,9 +111,15 @@ namespace NancyStack.Routing
             //}
         }
 
-        public IReturningRouteHandlerBuilder<TModel, TReturnModel> OnValidationError<TValidationModel>(Func<TValidationModel, dynamic> validationError)
+        public IReturningRouteHandlerBuilder<TModel, TReturnModel> OnValidationError<TValidationModel>(Func<OnScenarioContext<TValidationModel>, dynamic> validationError)
         {
-            this.onValidationError = new ValidationErrorHandler<TValidationModel>(module, validationError);
+            this.onValidationError = new ValidationErrorHandler<TValidationModel>(validationError);
+            return this;
+        }
+
+        public IReturningRouteHandlerBuilder<TModel, TReturnModel> OnValidationError<TValidationModel>()
+        {
+            this.onValidationError = new ValidationErrorHandler<TValidationModel>((x) => ValidationRouteHandlers.Default[typeof(TValidationModel)]((x as IModuleHolder).Module));
             return this;
         }
 
@@ -157,20 +162,33 @@ namespace NancyStack.Routing
         }
     }
 
-    public class ValidationErrorHandler<TValidationModel> : IValidationErrorHandler
+    public interface IModuleHolder
+    {
+        NancyStackModule Module { get; }
+    }
+
+    public class OnScenarioContext<TModel> : IModuleHolder
     {
         private readonly NancyStackModule module;
-        private readonly Func<TValidationModel, dynamic> onError;
+        public TModel Model { get; private set; }
 
-        public ValidationErrorHandler(NancyStackModule module, Func<TValidationModel, dynamic> onError)
+        public OnScenarioContext(NancyStackModule module, TModel model)
         {
             this.module = module;
-            this.onError = onError;
+            this.Model = model;
         }
 
-        public dynamic Handle(dynamic model)
+        public dynamic RenderView(string view)
         {
-            return onError(module.Bind<TValidationModel>());
+            return module.View[view, Model];
+        }
+
+        public NancyStackModule Module
+        {
+            get
+            {
+                return module;
+            }
         }
     }
 }

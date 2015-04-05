@@ -1,14 +1,16 @@
 ﻿using HtmlTags;
-using NancyTags = Nancy.ViewEngines.Razor;
+using Nancy.ViewEngines.Razor;
 using NancyStack.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using NancyTags = Nancy.ViewEngines.Razor;
+
 namespace NancyStack.Razor
 {
-    public interface IDisposableHtmlString : IDisposable
+    public interface IDisposableHtmlString : NancyTags.IHtmlString, IDisposable
     {
     }
 
@@ -71,24 +73,6 @@ namespace NancyStack.Razor
         public void Dispose()
         {
         }
-
-        //private readonly HtmlHelpers<TModel> _helper;
-
-        //public FormTag(HtmlHelpers<TModel> helper, string url)
-        //    : base(url)
-        //{
-        //    _helper = helper;
-        //}
-
-        //public void Dispose()
-        //{
-        //    //_helper.RenderContext.Context.
-
-        //    //using (var writer = new StreamWriter(_helper.RenderContext.Context.Response))
-        //    //{
-        //    //    writer.Write(_helper.Raw("</form>"));
-        //    //}
-        //}
     }
 
     public class LabelTag : HtmlTags.HtmlTag, NancyTags.IHtmlString

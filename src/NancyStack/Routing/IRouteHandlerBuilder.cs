@@ -1,4 +1,5 @@
 ﻿using Nancy;
+using NancyStack.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +18,13 @@ namespace NancyStack.Routing
 
     public interface IReturningRouteHandlerBuilder<TModel, TReturnModel>
     {
-        IReturningRouteHandlerBuilder<TModel, TReturnModel> On(Func<TReturnModel, bool> on, Func<TReturnModel, dynamic> result);
+        IReturningRouteHandlerBuilder<TModel, TReturnModel> On(Func<TReturnModel, bool> on, Func<OnScenarioContext<TReturnModel>, dynamic> result);
 
-        void OnSuccess(Func<TReturnModel, dynamic> result);
+        void OnSuccess(Func<OnScenarioContext<TReturnModel>, dynamic> result);
 
-        void OnSuccess(Func<NancyContext, TReturnModel, dynamic> result);
+        IReturningRouteHandlerBuilder<TModel, TReturnModel> OnValidationError<TValidationModel>(Func<OnScenarioContext<TValidationModel>, dynamic> specificValidationError);
 
-        IReturningRouteHandlerBuilder<TModel, TReturnModel> OnValidationError<TValidationModel>(Func<TValidationModel, dynamic> specificValidationError);
+        IReturningRouteHandlerBuilder<TModel, TReturnModel> OnValidationError<TValidationModel>();
     }
 
     public interface IRouteHandlerBuilder<TModel>
@@ -33,6 +34,6 @@ namespace NancyStack.Routing
 
     public interface IValidationErrorHandler
     {
-        dynamic Handle(dynamic model);
+        dynamic Handle(NancyStackModule module);
     }
 }

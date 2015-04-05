@@ -59,7 +59,10 @@
     <Compile Include="NancyStackException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Routing\HandlerMissingException.cs" />
+    <Compile Include="Routing\Handlers\OnHandler.cs" />
+    <Compile Include="Routing\Handlers\ValidationErrorHandler.cs" />
     <Compile Include="Routing\IRouteHandlerBuilder.cs" />
+    <Compile Include="Routing\ModelBinder.cs" />
     <Compile Include="Routing\RouteHandlerBuilder.cs" />
     <Compile Include="Routing\RouteCouldNotBeFoundException.cs" />
     <Compile Include="Routing\UrlRoute.cs" />
