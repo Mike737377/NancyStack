@@ -1,6 +1,7 @@
 ﻿using Nancy;
 using Nancy.Security;
 using NancyStack.Configuration;
+using NancyStack.ModelBinding;
 using NancyStack.Routing;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,13 @@ namespace NancyStack.Modules
     public class NancyStackModule : NancyModule
     {
         private readonly IUrlRouteRegister routeRegister;
+        private readonly IRouteHandlerFactory routeFactory;
 
         public NancyStackModule()
         {
             routeRegister = UrlRoute.Instance;
+            routeFactory = new RouteHandlerFactory(this);
+
             this.Before += CheckCsrfToken;
         }
 
@@ -38,34 +42,44 @@ namespace NancyStack.Modules
             return null;
         }
 
-        protected IRouteHandlerBuilder<TModel> GetRoute<TModel>(string route)
+        public IRouteHandlerFactory AddRoute
         {
-            return new RouteHandlerBuilder<TModel>(this, route, Get);
+            get
+            {
+                return routeFactory;
+            }
         }
 
-        protected IRouteHandlerBuilder<TModel> PostRoute<TModel>(string route)
-        {
-            return new RouteHandlerBuilder<TModel>(this, route, Post);
-        }
 
-        protected IRouteHandlerBuilder<TModel> PutRoute<TModel>(string route)
-        {
-            return new RouteHandlerBuilder<TModel>(this, route, Put);
-        }
 
-        protected IRouteHandlerBuilder<TModel> DeleteRoute<TModel>(string route)
-        {
-            return new RouteHandlerBuilder<TModel>(this, route, Delete);
-        }
+        //protected IRouteHandlerBuilder<TModel> GetRoute<TModel>(string route)
+        //{
+        //    return routeFactory.Get<TModel>(route);
+        //}
 
-        protected IRouteHandlerBuilder<TModel> PatchRoute<TModel>(string route)
-        {
-            return new RouteHandlerBuilder<TModel>(this, route, Patch);
-        }
+        //protected IRouteHandlerBuilder<TModel> PostRoute<TModel>(string route)
+        //{
+        //    return routeFactory.Post<TModel>(route);
+        //}
 
-        protected IRouteHandlerBuilder<TModel> OptionsRoute<TModel>(string route)
-        {
-            return new RouteHandlerBuilder<TModel>(this, route, Options);
-        }
+        //protected IRouteHandlerBuilder<TModel> PutRoute<TModel>(string route)
+        //{
+        //    return routeFactory.Put<TModel>(route);
+        //}
+
+        //protected IRouteHandlerBuilder<TModel> DeleteRoute<TModel>(string route)
+        //{
+        //    return routeFactory.Delete<TModel>(route);
+        //}
+
+        //protected IRouteHandlerBuilder<TModel> PatchRoute<TModel>(string route)
+        //{
+        //    return routeFactory.Patch<TModel>(route);
+        //}
+
+        //protected IRouteHandlerBuilder<TModel> OptionsRoute<TModel>(string route)
+        //{
+        //    return routeFactory.Options<TModel>(route);
+        //}
     }
 }

@@ -1,4 +1,5 @@
-﻿using NancyStack.ModelBinding;
+﻿using Nancy;
+using NancyStack.ModelBinding;
 using NancyStack.Modules;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace NancyStack.Routing.Handlers
             this.onError = onError;
         }
 
-        public dynamic Handle(NancyStackModule module)
+        public dynamic Handle(INancyModule module)
         {
             return onError(new OnScenarioContext<TValidationModel>(module, module.Bind<TValidationModel>()));
         }

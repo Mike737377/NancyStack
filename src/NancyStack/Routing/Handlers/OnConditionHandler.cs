@@ -5,9 +5,9 @@ using System.Text;
 
 namespace NancyStack.Routing.Handlers
 {
-    public class OnHandler<TModel>
+    public class OnConditionHandler<TModel>
     {
-        public OnHandler(Func<TModel, bool> on, Func<OnScenarioContext<TModel>, dynamic> result)
+        public OnConditionHandler(Func<TModel, bool> on, Func<OnScenarioContext<TModel>, dynamic> result)
         {
             this.Condition = on;
             this.HandleResult = result;

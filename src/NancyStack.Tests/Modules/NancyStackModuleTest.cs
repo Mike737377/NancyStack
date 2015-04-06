@@ -13,10 +13,10 @@ namespace NancyStack.Tests.Modules
     {
         public TestModule()
         {
-            GetRoute<GetQuery>("/get").Returning<GetResponse>().OnSuccess(x => new GetViewModel());
-            DeleteRoute<DeleteInput>("/delete").Returning<DeleteResponse>().OnSuccess(x => new DeleteViewModel());
-            PostRoute<PostInput>("/post").Returning<PostResponse>().OnSuccess(x => new PostViewModel());
-            PutRoute<PutInput>("/put").Returning<PutResponse>().OnSuccess(x => new PutViewModel());
+            AddRoute.Get<GetQuery>("/get").Returning<GetResponse>().OnSuccess(x => new GetViewModel());
+            AddRoute.Delete<DeleteInput>("/delete").Returning<DeleteResponse>().OnSuccess(x => new DeleteViewModel());
+            AddRoute.Post<PostInput>("/post").Returning<PostResponse>().OnSuccess(x => new PostViewModel());
+            AddRoute.Put<PutInput>("/put").Returning<PutResponse>().OnSuccess(x => new PutViewModel());
         }
     }
 

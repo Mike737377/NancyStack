@@ -8,27 +8,33 @@ using System.Text;
 
 namespace NancyStack.ModelBinding
 {
-    public static class ModelBinderExtensions
+    public interface IModelBinder
     {
-        public static TModel Bind<TModel>(this NancyStackModule module)
+        TModel Bind<TModel>(INancyModule module);
+        TModel BindAndValidate<TModel>(INancyModule module);
+    }
+
+    public class ModelBinder : IModelBinder
+    {
+        public TModel Bind<TModel>(INancyModule module)
         {
             var model = module.BindTo(Activator.CreateInstance<TModel>());
 
-            model = Up(module, model);
+            model = ApplyMissingBindings(module, model);
 
             return model;
         }
 
-        public static TModel BindAndValidate<TModel>(this NancyStackModule module)
+        public TModel BindAndValidate<TModel>(INancyModule module)
         {
             var model = module.BindToAndValidate(Activator.CreateInstance<TModel>());
 
-            model = Up(module, model);
+            model = ApplyMissingBindings(module, model);
 
             return model;
         }
 
-        private static TModel Up<TModel>(this NancyStackModule module, TModel model)
+        private TModel ApplyMissingBindings<TModel>(INancyModule module, TModel model)
         {
             var modelType = model.GetType();
             var properties = modelType.GetProperties();
@@ -42,14 +48,27 @@ namespace NancyStack.ModelBinding
 
             modelType.GetProperties().Where(x => x.PropertyType == typeof(string))
                 .Each(x =>
+                {
+                    if ((x.GetValue(model, null) as string) == null)
                     {
-                        if ((x.GetValue(model, null) as string) == null)
-                        {
-                            x.SetValue(model, string.Empty, null);
-                        }
-                    });
+                        x.SetValue(model, string.Empty, null);
+                    }
+                });
 
             return model;
+        }
+    }
+
+    public static class ModelBinderExtensions
+    {
+        public static TModel Bind<TModel>(this INancyModule module)
+        {
+            return new ModelBinder().Bind<TModel>(module);
+        }
+
+        public static TModel BindAndValidate<TModel>(this INancyModule module)
+        {
+            return new ModelBinder().BindAndValidate<TModel>(module);
         }
     }
 }

@@ -8,15 +8,15 @@ namespace NancyStack.Sample.Modules
     {
         public IndexModule()
         {
-            GetRoute<IndexQueryModel>("/")
+            AddRoute.Get<IndexQueryModel>("/")
                 .Returning<IndexViewModel>()
                 .OnSuccess(x => x.RenderView("Index"));
 
-            GetRoute<FormQueryModel>("/form")
+            AddRoute.Get<FormQueryModel>("/form")
                 .Returning<FormViewModel>()
                 .OnSuccess(x => x.RenderView("Form"));
 
-            PostRoute<FormInputModel>("/form")
+            AddRoute.Post<FormInputModel>("/form")
                 .Returning<FormResponseModel>()
                 .OnValidationError<FormQueryModel>()
                 .OnSuccess(x => x.RenderView("FormResult"));
